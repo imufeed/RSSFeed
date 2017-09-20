@@ -1,0 +1,162 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model IEnumerable<RSSFeed.Models.Rss>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<h2>Search</h2>
+@using (Html.BeginForm("Index", "Rsses", FormMethod.Get))
+{
+    <p>
+        Keyword: @Html.TextBox("SearchString")
+        <input type="submit" value="Search DB" />
+    </p>
+}
+
+@if (TempData["SUCCESS"] != null)
+{
+    <p style="color:red">@Html.Encode("Total of " + TempData["SUCCESS"] + " successfully inserted into the Database.")</p>
+}
+@if (TempData["FAIL"] != null)
+{
+    <p style="color:red">@Html.Encode("Total of " + TempData["FAIL"] + " Failed to be inserted into the Database. Already exist.")</p>
+}
+@if (TempData["DELETED"] != null)
+{
+    <p style="color:red">@Html.Encode("Total of " + TempData["DELETED"] + " successfully deleted from the Database.")</p>
+}
+
+
+@if (Model.Count() > 0)
+{
+    <center>
+        @Html.ActionLink("Download as JSON file", "DownloadJSON", "ReadRSS", new { searchString = @ViewBag.SEARCHWORD }, null) |
+        @Html.ActionLink("View as JSON", "DisplayJSON", "ReadRSS", new { searchString = @ViewBag.SEARCHWORD }, null)
+    </center>
+    <center>@Html.ActionLink("Delete These RSS from Database", "DeleteMany", "ReadRSS", new { searchString = @ViewBag.SEARCHWORD }, new { onclick = "return confirm('Are you sure you wish to delete these " + Model.Count() + " RSS?');" })</center>
+
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PublishDate)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    <a href="@item.Link">@Html.DisplayFor(modelItem => item.Link)</a>                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublishDate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Rsses", new { id = item.ID }, null) |
+                    @Html.ActionLink("Details", "Details", "Rsses", new { id = item.ID }, null)|
+                    @Html.ActionLink("Delete", "Delete", "Rsses", new { id = item.ID }, null)
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else if (@ViewBag.SEARCHWORD == "")
+{
+    <center><h3>Database is <strong>empty</strong></h3></center>
+    <center>@Html.ActionLink("Read some RSS from the web", "Index", "ReadRSS")</center>
+}
+else
+{
+    <center><h3>No result found matching: <strong>@ViewBag.SEARCHWORD</strong></h3></center>
+}
+
+
+
+
+
+
+
+@*@model IEnumerable<RSSFeed.Models.Rss>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+
+    @using (Html.BeginForm("Index", "Rsses", FormMethod.Get))
+    {
+    <p>
+        Title: @Html.TextBox("SearchString") <br />
+        <input type="submit" value="Filter" />
+    </p>
+    }
+    
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Link)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>        
+        <th>
+            @Html.DisplayNameFor(model => model.PublishDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Link)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>        
+        <td>
+            @Html.DisplayFor(modelItem => item.PublishDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>*@
